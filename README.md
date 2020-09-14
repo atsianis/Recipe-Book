@@ -1,4 +1,6 @@
-# Project
+# Recipe Book Angular App
+
+## Project
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.0.
 
