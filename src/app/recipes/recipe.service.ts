@@ -6,9 +6,9 @@ import { ShoppingListService } from '../shopping-list/shopping-list.service';
 @Injectable()
 export class RecipeService{
 
-    constructor(private shoppingListService: ShoppingListService){}
-
     recipeSelected = new EventEmitter<Recipe>();
+
+    constructor(private shoppingListService: ShoppingListService){}
 
     private recipes: Recipe[] = [
         new Recipe('Chicken Wings',
@@ -26,9 +26,8 @@ export class RecipeService{
     }
 
     sendIngredientsToShoppingList(ingredients: Ingredient[]) {
-        ingredients.forEach((ingredient)=>{
-            this.shoppingListService.addIngredient(ingredient)
-        });
-      }
+            this.shoppingListService.addIngredients(ingredients)
+        }
+    
 
 }
