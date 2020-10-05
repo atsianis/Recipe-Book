@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Ingredient } from '../shared/ingredient.model';
 import {ShoppingListService } from './shopping-list.service';
 
@@ -10,13 +11,14 @@ import {ShoppingListService } from './shopping-list.service';
 export class ShoppingListComponent implements OnInit {
 
   ingredients: Ingredient[]
+  private idChangeSub: Subscription;
 
 
   constructor( private shoppingListService: ShoppingListService) { }
 
   ngOnInit(): void {
     this.ingredients = this.shoppingListService.getIngredients();
-    this.shoppingListService.ingredientsChanged.subscribe(
+    this.idChangeSub = this.shoppingListService.ingredientsChanged.subscribe(
       (ingredients: Ingredient[]) =>{
         this.ingredients = ingredients;
       }
@@ -29,4 +31,9 @@ export class ShoppingListComponent implements OnInit {
   //   this.ingredients.push($event);
   // }
 
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    this.idChangeSub.unsubscribe();
+  }
 }
