@@ -11,14 +11,14 @@ import {ShoppingListService } from './shopping-list.service';
 export class ShoppingListComponent implements OnInit {
 
   ingredients: Ingredient[]
-  private idChangeSub: Subscription;
+  private subscription: Subscription;
 
 
   constructor( private shoppingListService: ShoppingListService) { }
 
   ngOnInit(): void {
     this.ingredients = this.shoppingListService.getIngredients();
-    this.idChangeSub = this.shoppingListService.ingredientsChanged.subscribe(
+    this.subscription = this.shoppingListService.ingredientsChanged.subscribe(
       (ingredients: Ingredient[]) =>{
         this.ingredients = ingredients;
       }
@@ -34,6 +34,6 @@ export class ShoppingListComponent implements OnInit {
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
-    this.idChangeSub.unsubscribe();
+    this.subscription.unsubscribe();
   }
 }
