@@ -25,6 +25,10 @@ export class ShoppingListComponent implements OnInit {
     )
   }
 
+  onEditItem(index: number) {
+    this.shoppingListService.startedEditing.next(index);
+  }
+
   // // $event is the information passed
   // // so in this case its just an Ingredient
   // onAddedIngredient($event){
