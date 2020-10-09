@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
+import { Recipe } from '../recipe.model';
 import { RecipeService } from '../recipe.service';
 
 @Component({
@@ -48,8 +49,8 @@ export class RecipeEditComponent implements OnInit {
     }
     this.recipeForm = new FormGroup({
       'name': new FormControl(recipeName,Validators.required),
-      'imagePath': new FormControl(recipeImagePath,Validators.required),
       'description': new FormControl(description,Validators.required),
+      'imagePath': new FormControl(recipeImagePath,Validators.required),
       'ingredients': ingredients
     })
   }
@@ -66,7 +67,21 @@ export class RecipeEditComponent implements OnInit {
   }
 
   onSubmit(){
-    console.log(this.recipeForm);
+    // const newRecipe = new Recipe(
+    //   this.recipeForm.value['name'],
+    //   this.recipeForm.value['description'],
+    //   this.recipeForm.value['imagePath'],
+    //   this.recipeForm.value['ingredients']
+    //
+    // because the form that we created has controls matching EXACTLY
+    // the fields of the model, we can skip the part of converting the form.value
+    // into a model and we can directly pass it into the Service
+    //);
+    if (this.editMode) {
+      this.recipeService.updateRecipe(this.id,this.recipeForm.value);
+    }else {
+      this.recipeService.addRecipe(this.recipeForm.value);
+    }
   }
 
 }
