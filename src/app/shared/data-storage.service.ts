@@ -15,7 +15,15 @@ export class DataStorageService {
       console.log(response);
     });
   }
+  /*
+  In the fetchRecipes function we use two different map fuctions, We must make clear that the first incident
+  is the rxjs operator that is used to change the observable's returned data before subscribing. The second
+  one is the classic JS map function that is used on arrays. THEY ARE NOT THE SAME FUNCTION, JUST SAME NAME
 
+  The proccess in the operator makes sure that if a recipe has no ingredient element ( in case that we create
+  a recipe without adding any ingredients the ingredients array is not even initialized ), an empty one is created
+  in order to avoid errors while manipulating the fetched recipe.
+  */
   fetchRecipes(){
     this.http
     .get<Recipe[]>(
