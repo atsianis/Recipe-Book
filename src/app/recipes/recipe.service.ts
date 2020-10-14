@@ -11,16 +11,18 @@ export class RecipeService{
 
     constructor(private shoppingListService: ShoppingListService){}
 
-    private recipes: Recipe[] = [
-        new Recipe('Chicken Wings',
-        'Yummy chicken wings with tomato sauce',
-        'https://www.seriouseats.com/2019/07/20190618-grilled-turkish-chicken-wings-vicky-wasik-13.jpg',
-        [new Ingredient("Chicken Wings",10), new Ingredient("Tomatoes", 3), new Ingredient("Olive Oil",1)]),
-        new Recipe('Clam Noodles',
-        'Noodles with clams, vegetables and sweet sauce',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRNYQQ4cKBHDkYH2OSw50lSVSrqsUBddUrTBw&usqp=CAU',
-        [new Ingredient("Noodles",3), new Ingredient("Clams", 10), new Ingredient("Veggetables",6)])
-      ];
+    // private recipes: Recipe[] = [
+    //     new Recipe('Chicken Wings',
+    //     'Yummy chicken wings with tomato sauce',
+    //     'https://www.seriouseats.com/2019/07/20190618-grilled-turkish-chicken-wings-vicky-wasik-13.jpg',
+    //     [new Ingredient("Chicken Wings",10), new Ingredient("Tomatoes", 3), new Ingredient("Olive Oil",1)]),
+    //     new Recipe('Clam Noodles',
+    //     'Noodles with clams, vegetables and sweet sauce',
+    //     'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRNYQQ4cKBHDkYH2OSw50lSVSrqsUBddUrTBw&usqp=CAU',
+    //     [new Ingredient("Noodles",3), new Ingredient("Clams", 10), new Ingredient("Veggetables",6)])
+    //   ];
+
+    recipes: Recipe[] = [];
 
     setRecipes(recipes: Recipe[]){
       this.recipes = recipes;
