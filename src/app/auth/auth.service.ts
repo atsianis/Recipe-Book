@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 interface AuthResponseData {
   kind: string,
@@ -23,6 +25,21 @@ export class AuthService {
         password: password,
         returnSecureToken: true
       }
-      );
+      ).pipe(catchError(errorResponse => {
+        let errorMessage = 'An unknown error occured';
+        if(!errorResponse.error || !errorResponse.error.error){
+          return throwError(errorMessage);
+        }
+        switch (errorResponse.error.error.message) {
+          // see firebase api for potential messages
+          case 'EMAIL_EXISTS':
+            errorMessage = 'This email already exists';
+          case 'OPERATION_NOT_ALLOWED':
+            errorMessage = 'Operation not allowed';
+          case 'TOO_MANY_ATTEMPTS_TRY_LATER':
+            errorMessage = 'Requests have been blocked due to unusual activity. Try again later';
+        }
+        return throwError(errorMessage);
+      }));
   }
 }
