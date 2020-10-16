@@ -1,19 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnDestroy, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { AlertComponent } from '../shared/alert/alert.component';
+import { PlaceholderDirective } from '../shared/placeholder/placeholder.directive';
 import { AuthService, AuthResponseData } from './auth.service';
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html'
 })
-export class AuthComponent{
+export class AuthComponent implements OnDestroy{
   loginMode = true;
   isLoading = false;
   error: string = null;
+  @ViewChild(PlaceholderDirective, {static: false})  alertHost: PlaceholderDirective;
+  closeSub: Subscription;
 
-  constructor( private authService: AuthService, private router: Router) {}
+  constructor( private authService: AuthService, private router: Router, private componentFactoryResolver: ComponentFactoryResolver) {}
 
   onSwitchMode() {
     this.loginMode = !this.loginMode;
@@ -44,9 +48,48 @@ export class AuthComponent{
       errorMessage => {
         console.log(errorMessage);
         this.error = errorMessage;
+        this.showErrorAlert(errorMessage);
         this.isLoading = false;
       }
     );
     form.reset();
   }
-}
+
+  onHandleError() {
+    this.error = null;
+  }
+
+  ngOnDestroy() {
+    if (this.closeSub) {
+      this.closeSub.unsubscribe();
+    }
+  }
+
+  // implemented to showcase the dynamic component loader approach
+  // of dynamic components
+  private showErrorAlert(message: string){
+    // naive expectation to programmatically instantiate a component
+    // const alertCmp = new AlertComponent()
+    // its valid ts/js code but Angular needs more than that
+    // the component needs to be instantiated via the Angular ecosystem
+
+    // the below property is a factory that 'knows' how to instantiate AlertComponents
+    const alertCmpFactry = this.componentFactoryResolver.resolveComponentFactory(AlertComponent);
+    // access the public ViewContainerReference of the directive which
+    // gives us access and complete power over the element
+    // hosting the directive and which is the tool that has the power
+    // to alter the DOM as we wish
+    const hostViewContainer = this.alertHost.viewContainerRef;
+    hostViewContainer.clear();
+    // access to the reference of the created component
+    const componentRef = hostViewContainer.createComponent(alertCmpFactry);
+    // with instance we access th actual instance of the component that was created
+    componentRef.instance.message = message;
+    this.closeSub = componentRef.instance.close.subscribe( ()=> {
+      this.closeSub.unsubscribe();
+      hostViewContainer.clear()
+    })
+    }
+
+  }
+
