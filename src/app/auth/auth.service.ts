@@ -19,6 +19,7 @@ export interface AuthResponseData {
 export class AuthService {
 
   userSubject = new BehaviorSubject<User>(null);
+  private tokenExpirationTimer: any;
 
   constructor( private http: HttpClient, private router: Router) {}
 
@@ -60,6 +61,12 @@ export class AuthService {
     if (loadedUser.token) {
       this.userSubject.next(loadedUser);
     }
+  }
+
+  autoLogout(expirationDuration: number) {
+    this.tokenExpirationTimer = setTimeout( () => {
+      this.logout();
+    }, expirationDuration)
   }
 
   logout() {
