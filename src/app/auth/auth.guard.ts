@@ -27,6 +27,7 @@ export class AuthGuard implements CanActivate {
         if (isAuth) {
           return true;
         }
+        //Reference: https://juristr.com/blog/2018/11/better-route-guard-redirects/#new-returning-an-urltree
         return this.router.createUrlTree(['/auth']);
       })
     );
