@@ -1,8 +1,18 @@
 <div class="row">
   <div class="col-xs-12 col-md-6 col-md-offset-3">
-    <div class="alert alert-danger" *ngIf="error">
+    <!-- Classic Error Display Box -->
+
+    <!-- <div class="alert alert-danger" *ngIf="error">
       <p>{{ error }}</p>
-    </div>
+    </div> -->
+
+    <!-- Dynamic Component for Error using the ngIf approach -->
+
+    <!-- <app-alert [message]="error" *ngIf="error" (close) = "onHandleError()"></app-alert> -->
+
+    <!-- Dynamic Component for Error using the programmatical approach -->
+
+    <ng-template appPlaceholder></ng-template>
     <div *ngIf="isLoading" style="text-align: center;">
       <app-loading-spinner></app-loading-spinner>
     </div>
