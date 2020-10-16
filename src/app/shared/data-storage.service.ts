@@ -5,16 +5,21 @@ import { AuthService } from '../auth/auth.service';
 import { Recipe } from '../recipes/recipe.model';
 import { RecipeService } from '../recipes/recipe.service';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class DataStorageService {
-
-  constructor(private http: HttpClient, private recipesService: RecipeService, private authService: AuthService) {}
+  constructor(
+    private http: HttpClient,
+    private recipesService: RecipeService,
+    private authService: AuthService
+  ) {}
 
   storeRecipes() {
     const recipes = this.recipesService.getRecipes();
-    this.http.put('https://recipebook-d75ae.firebaseio.com/recipes.json',recipes).subscribe( response => {
-      console.log(response);
-    });
+    this.http
+      .put('https://recipebook-d75ae.firebaseio.com/recipes.json', recipes)
+      .subscribe((response) => {
+        console.log(response);
+      });
   }
   /*
   In the fetchRecipes function we use two different map fuctions, We must make clear that the first incident
@@ -43,26 +48,50 @@ export class DataStorageService {
       what we are doing in the second parameter of the request (remember that the last argument of all http
       requests is an object that is used to parametrize the request - add headers, parameters etc etc).
   */
-  fetchRecipes(){
-    return this.authService.userSubject.pipe(take(1), exhaustMap( user => {
-      return this.http.get<Recipe[]>(
-        'https://recipebook-d75ae.firebaseio.com/recipes.json',
-        {
-          params: new HttpParams().set('auth', user.token)
-        }
+
+  // fetchRecipes(){
+  //   return this.authService.userSubject.pipe(take(1), exhaustMap( user => {
+  //     return this.http.get<Recipe[]>(
+  //       'https://recipebook-d75ae.firebaseio.com/recipes.json',
+  //       {
+  //         params: new HttpParams().set('auth', user.token)
+  //       }
+  //     );
+  //   }),map( recipes => {
+  //     return recipes.map(recipe => {
+  //       return { ...recipe, ingredients: recipe.ingredients ? recipe.ingredients : []};
+  //     })
+  //   }),tap ( recipes => {
+  //     this.recipesService.setRecipes(recipes);
+  //   })
+  // )
+  //   }
+
+  /*
+  We keep the above implementation just for the record, as it was really useful for understanding the usecase
+  of multiple rxJs operators and especially the exhaustMap one. But for the usecase that we have here, we can use
+  a better, cleaner approach. We have implemented an interceptor (the AuthInterceptor), which in general
+  is a service that executes its intercept method right before any request leaves our application.
+  In ther we attach the demanded headers, tokens etc and we do not have to worry about all that stuff here.
+  So in the new fetchData method, we get rid of the complex implementation of the previous one and we just send a
+  get request to the server
+ */
+
+  fetchRecipes() {
+    return this.http
+      .get<Recipe[]>('https://recipebook-d75ae.firebaseio.com/recipes.json')
+      .pipe(
+        map((recipes) => {
+          return recipes.map((recipe) => {
+            return {
+              ...recipe,
+              ingredients: recipe.ingredients ? recipe.ingredients : [],
+            };
+          });
+        }),
+        tap((recipes) => {
+          this.recipesService.setRecipes(recipes);
+        })
       );
-    }),map( recipes => {
-      return recipes.map(recipe => {
-        return { ...recipe, ingredients: recipe.ingredients ? recipe.ingredients : []};
-      })
-    }),tap ( recipes => {
-      this.recipesService.setRecipes(recipes);
-    })
-  )
-    }
-
-
-
   }
-
-
+}
