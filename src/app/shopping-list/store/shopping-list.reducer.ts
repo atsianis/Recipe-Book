@@ -13,7 +13,7 @@ const initialState = {
 // thats a TS feature, we can assign default values to function parameters in case they are not given by the caller
 // so the first time the app state will be set to the default value we give it but for subsequent calls
 // the state will always be the previous state
-export function shoppingListReducer(state = initialState, action: ShoppingListActions.AddIngredient) {
+export function shoppingListReducer(state = initialState, action: ShoppingListActions.ShoppingListActions) {
   switch(action.type) {
     case ShoppingListActions.ADD_INGREDIENT:
       // copy of state
@@ -23,6 +23,11 @@ export function shoppingListReducer(state = initialState, action: ShoppingListAc
         ...state,
         ingredients: [...state.ingredients, action.payload]
       };
+    case ShoppingListActions.ADD_INGREDIENTS:
+      return {
+        ...state,
+        ingredient: [...state.ingredients, ...action.payload]
+      }
     default:
       return state;
   }
