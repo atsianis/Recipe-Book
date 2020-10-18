@@ -28,6 +28,33 @@ export function shoppingListReducer(state = initialState, action: ShoppingListAc
         ...state,
         ingredient: [...state.ingredients, ...action.payload]
       }
+    case ShoppingListActions.UPDATE_INGREDIENT:
+      // getting the specific ingredient that we want to override from the state
+      const ingredient = state.ingredients[action.payload.index];
+      // copying the ingredient into another object because we cant directly touch the Store
+      // NgRx STRONGLY SUGGESTS THAT REDUCERS AFFECT THE STORE IMMUTABLY
+      // NOTE: The '...ingredient' is redundant because we coyld just enter the new ingredient
+      // but in case that we had some other property that we wanted to be overriden we would have to use it
+      const updatedIngredient = {
+        ...ingredient,
+        ...action.payload.ingredient
+      };
+      // preparing the updated ingredients array that is going to replace the one in the Store
+      const updatedIngredients = [...state.ingredients];
+      // this is the final array that we are going to return
+      updatedIngredients[action.payload.index] = updatedIngredient;
+      return {
+        ...state,
+        ingredients: updatedIngredients
+      };
+    case ShoppingListActions.DELETE_INGREDIENT:
+      return {
+        ...state,
+        // this is the vanilla JS filter method
+        ingredients: state.ingredients.filter( (ingredient, index) => {
+          return index !== action.payload;
+        })
+      };
     default:
       return state;
   }
