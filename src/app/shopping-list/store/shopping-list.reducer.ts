@@ -64,6 +64,20 @@ export function shoppingListReducer(state: State = initialState, action: Shoppin
           return index !== action.payload;
         })
       };
+    case ShoppingListActions.START_EDIT:
+      return {
+        ...state,
+        editedIngredientIndex: action.payload,
+        // again we dont want to return the reference of the ingredient in the stor
+        // we want to create a copy of that ingredient
+        editedIngredient: { ...state.ingredients[action.payload] }
+      }
+    case ShoppingListActions.STOP_EDIT:
+      return {
+        ...state,
+        editedIngredient: null,
+        editedIngredientIndex: -1
+      }
     default:
       return state;
   }
