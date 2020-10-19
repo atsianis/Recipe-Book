@@ -1,6 +1,10 @@
 import { Ingredient } from '../../shared/ingredient.model';
 import * as ShoppingListActions from './shopping-list.actions';
 
+// This is the slice of the app's Store that this reducer
+// ( which is the reducer of the shopping-list feature)
+// is going to interat with
+
 export interface State {
   ingredients: Ingredient[];
   editedIngredient: Ingredient;
