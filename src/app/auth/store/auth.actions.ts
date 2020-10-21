@@ -4,7 +4,8 @@ export const LOGIN_START = '[Auth] Login Start';
 export const AUTHENTICATE_SUCCESS = '[Auth] Authenticate Success';
 export const AUTHENTICATE_FAIL = '[Auth] Authenticate Fail'
 export const LOGOUT = '[Auth] Logout';
-export const SIGNUP_START = '[Auth] Sign Up'
+export const CLEAR_ERROR = '[Auth] Clear Error';
+export const SIGNUP_START = '[Auth] Sign Up';
 
 export class AuthenticateSuccess implements Action {
   readonly type = AUTHENTICATE_SUCCESS;
@@ -34,4 +35,8 @@ export class SignUpStart implements Action {
   constructor( public payload: { email:string, password: string} ){}
 }
 
-export type AuthActions = AuthenticateSuccess | Logout | LoginStart | AuthenticateFail | SignUpStart;
+export class ClearError implements Action{
+  readonly type = CLEAR_ERROR;
+}
+
+export type AuthActions = AuthenticateSuccess | Logout | LoginStart | AuthenticateFail | SignUpStart | ClearError;
