@@ -5,19 +5,32 @@ import { Observable, Subscription } from 'rxjs';
 import { AlertComponent } from '../shared/alert/alert.component';
 import { PlaceholderDirective } from '../shared/placeholder/placeholder.directive';
 import { AuthService, AuthResponseData } from './auth.service';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html'
 })
-export class AuthComponent implements OnDestroy{
+export class AuthComponent implements OnInit,OnDestroy{
   loginMode = true;
   isLoading = false;
   error: string = null;
   @ViewChild(PlaceholderDirective, {static: false})  alertHost: PlaceholderDirective;
   closeSub: Subscription;
 
-  constructor( private authService: AuthService, private router: Router, private componentFactoryResolver: ComponentFactoryResolver) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private store: Store<fromApp.AppState>
+    ) {}
+
+  ngOnInit() {
+    this.store.select('auth').subscribe( authState => {
+      this.isLoading = authState.loading;
+      this.error = authState.authError;
+    });
+  }
 
   onSwitchMode() {
     this.loginMode = !this.loginMode;
