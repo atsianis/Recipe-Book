@@ -63,8 +63,33 @@ export class AuthEffects {
           const expirationDate = new Date( new Date().getTime() + +resData.expiresIn * 1000);
           return new AuthActions.Login({email: resData.email, userId: resData.localId, token: resData.idToken, expirationDate: expirationDate});
         }),
-        catchError( errors => {
-          return of();
+        catchError( errorResponse => {
+          let errorMessage = 'An unknown error occured';
+          if(!errorResponse.error || !errorResponse.error.error){
+            return of(new AuthActions.LoginFail(errorMessage));
+          }
+          switch (errorResponse.error.error.message) {
+            // see firebase api for potential messages of sign in/up
+            case 'EMAIL_NOT_FOUND':
+              errorMessage = 'This email doesn\'t exists';
+              break;
+            case 'INVALID_PASSWORD':
+              errorMessage = 'The email was found but the password is incorrect';
+              break;
+            case 'USER_DISABLED':
+              errorMessage = 'The user account has been disabled by an administrator';
+              break;
+            case 'EMAIL_EXISTS':
+              errorMessage = 'This email already exists';
+              break;
+            case 'OPERATION_NOT_ALLOWED':
+              errorMessage = 'Operation not allowed';
+              break;
+            case 'TOO_MANY_ATTEMPTS_TRY_LATER':
+              errorMessage = 'Requests have been blocked due to unusual activity. Try again later';
+              break;
+        }
+          return of(new AuthActions.LoginFail(errorMessage));
         })
       )
     }),
