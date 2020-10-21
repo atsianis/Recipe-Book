@@ -57,7 +57,6 @@ export class AuthService {
   logout() {
     //this.userSubject.next(null);
     this.store.dispatch( new AuthActions.Logout());
-    this.router.navigate(['/auth']);
     localStorage.removeItem('userData');
     // making sure to clear the expiration timer (if existing) when manually logging out
     if (this.tokenExpirationTimer) {

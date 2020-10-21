@@ -155,8 +155,8 @@ export class AuthEffects {
   // We have to let Angular know about this
   // and we do it with the following parametrization of the Decorator
   @Effect({ dispatch: false })
-  authSuccess = this.actions$.pipe(
-    ofType(AuthActions.AUTHENTICATE_SUCCESS),
+  authRedirect = this.actions$.pipe(
+    ofType(AuthActions.AUTHENTICATE_SUCCESS,AuthActions.LOGOUT),
     tap(() => {
       this.router.navigate(['/']);
     })
