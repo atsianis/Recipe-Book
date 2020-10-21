@@ -56,7 +56,8 @@ export class AuthComponent implements OnInit,OnDestroy{
       //authObservable = this.authService.login(email,password)
       this.store.dispatch(new AuthActions.LoginStart({email: email, password: password}));
     } else{
-      authObservable = this.authService.signUp(email,password)
+      //authObservable = this.authService.signUp(email,password)
+      this.store.dispatch(new AuthActions.SignUpStart({email: email, password: password}));
     }
 
     // authObservable.subscribe(
