@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '../user.model';
+import { AuthService } from '../auth.service';
 
 // 1.
 
@@ -110,6 +111,9 @@ export class AuthEffects {
           }
         )
         .pipe(
+          tap(resData => {
+            this.authService.setLogoutTimer(+resData.expiresIn * 1000);
+          }),
           map((resData) => {
             return handleAuthentication(
               resData.expiresIn,
@@ -140,6 +144,9 @@ export class AuthEffects {
           }
         )
         .pipe(
+          tap(resData => {
+            this.authService.setLogoutTimer(+resData.expiresIn * 1000);
+          }),
           map((resData) => {
             return handleAuthentication(
               resData.expiresIn,
@@ -170,6 +177,7 @@ export class AuthEffects {
   authLogout = this.actions$.pipe(
     ofType(AuthActions.LOGOUT),
     tap( () => {
+      this.authService.clearLogoutTimer();
       localStorage.removeItem('userData');
       this.router.navigate(['/auth']);
     })
@@ -189,10 +197,9 @@ export class AuthEffects {
 
     if (loadedUser.token) {
       //this.userSubject.next(loadedUser);
+      const timeRemaining = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
+      this.authService.setLogoutTimer(timeRemaining);
       return new AuthActions.AuthenticateSuccess({email: loadedUser.email, userId: loadedUser.id, token: loadedUser.token, expirationDate: new Date(userData._tokenExpirationDate)});
-    //   const timeRemaining = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
-    //   this.autoLogout(timeRemaining);
-    // }
     }
     return {type: 'no-auto-login'};
   })
@@ -203,6 +210,7 @@ export class AuthEffects {
   constructor(
     private actions$: Actions,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 }
