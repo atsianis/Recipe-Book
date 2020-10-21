@@ -31,32 +31,6 @@ export class AuthService {
     private store: Store<fromApp.AppState>
   ) {}
 
-  signUp(email: string, password: string) {
-    return this.http.post<AuthResponseData>(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + environment.firebaseAPIKey,
-      {
-        email: email,
-        password: password,
-        returnSecureToken: true
-      }
-      ).pipe(catchError(this.handleError), tap(responseData => {
-        this.handleAuthentication(responseData.email, responseData.localId, responseData.idToken, +responseData.expiresIn);
-      }));
-  }
-
-  login(email: string, password: string) {
-    return this.http.post<AuthResponseData>(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + environment.firebaseAPIKey,
-      {
-        email: email,
-        password: password,
-        returnSecureToken: true
-      }
-      ).pipe(catchError(this.handleError) ,tap(responseData => {
-        this.handleAuthentication(responseData.email, responseData.localId, responseData.idToken, +responseData.expiresIn);
-      }));
-  }
-
   autoLogin() {
     const userData:
     { email: string, id: string, _token: string, _tokenExpirationDate: string}
