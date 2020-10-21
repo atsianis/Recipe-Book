@@ -9,19 +9,28 @@ import {
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import * as fromApp from '../store/app.reducer'
+import { Store } from '@ngrx/store';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private store: Store<fromApp.AppState>) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):
     | boolean
     | UrlTree
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree> {
-    return this.authService.userSubject.pipe(
+    //return this.authService.userSubject.pipe(
+    return this.store.select('auth').pipe(
       // take() is used on BehaviorSubjects, we avoid subscribing, simply take the data that we need now
       take(1),
+      map( authState => {
+        return authState.user;
+      }),
       map((user) => {
         const isAuth = user ? true : false;
         if (isAuth) {
