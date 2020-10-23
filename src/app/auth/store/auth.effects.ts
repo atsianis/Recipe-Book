@@ -60,6 +60,7 @@ const handleAuthentication = (
     userId: userId,
     token: token,
     expirationDate: expirationDate,
+    redirect: true
   });
 };
 
@@ -168,8 +169,10 @@ export class AuthEffects {
   @Effect({ dispatch: false })
   authRedirect = this.actions$.pipe(
     ofType(AuthActions.AUTHENTICATE_SUCCESS),
-    tap(() => {
-      this.router.navigate(['/']);
+    tap( (authSuccessAction: AuthActions.AuthenticateSuccess) => {
+      if( authSuccessAction.payload.redirect) {
+        this.router.navigate(['/']);
+      }
     })
   );
 
@@ -199,7 +202,7 @@ export class AuthEffects {
       //this.userSubject.next(loadedUser);
       const timeRemaining = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
       this.authService.setLogoutTimer(timeRemaining);
-      return new AuthActions.AuthenticateSuccess({email: loadedUser.email, userId: loadedUser.id, token: loadedUser.token, expirationDate: new Date(userData._tokenExpirationDate)});
+      return new AuthActions.AuthenticateSuccess({email: loadedUser.email, userId: loadedUser.id, token: loadedUser.token, expirationDate: new Date(userData._tokenExpirationDate), redirect: false});
     }
     return {type: 'no-auto-login'};
   })
