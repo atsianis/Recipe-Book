@@ -13,18 +13,18 @@ import { map } from 'rxjs/operators';
 export class RecipeListComponent implements OnInit, OnDestroy {
 
   recipes:Recipe[];
-  recipeChanges: Subscription;
+  subscription: Subscription;
 
   constructor(
     private store: Store<fromApp.AppState>
     ) {}
 
   ngOnDestroy(): void {
-    this.recipeChanges.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   ngOnInit(): void {
-    this.store.select('recipes')
+    this.subscription = this.store.select('recipes')
     .pipe(map(
       recipesState => {return recipesState.recipes}
     ))
