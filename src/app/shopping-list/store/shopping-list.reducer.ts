@@ -35,7 +35,7 @@ export function shoppingListReducer(state: State = initialState, action: Shoppin
     case ShoppingListActions.ADD_INGREDIENTS:
       return {
         ...state,
-        ingredient: [...state.ingredients, ...action.payload]
+        ingredients: [...state.ingredients, ...action.payload]
       }
     case ShoppingListActions.UPDATE_INGREDIENT:
       // getting the specific ingredient that we want to override from the state
