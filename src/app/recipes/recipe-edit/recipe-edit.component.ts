@@ -40,8 +40,7 @@ export class RecipeEditComponent implements OnInit {
 
     if (this.editMode) {
       //const recipe = this.recipeService.getRecipe(this.id);
-      this.store
-        .select('recipes')
+      this.store .select('recipes')
         .pipe(
           map((recipesState) => {
             return recipesState.recipes.find((recipe, index) => {
